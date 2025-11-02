@@ -109,6 +109,13 @@ export default function App() {
     e.preventDefault();
     if (!input.trim()) return;
 
+    // Show immediate feedback that button was clicked
+    setErrorMessage({
+      type: "debug",
+      message: "Sending message...",
+      details: "Please wait...",
+    });
+
     const userMessage = { sender: "You", text: input, timestamp: new Date() };
     setMessages((m) => [...m, userMessage]);
     setInput("");
@@ -185,13 +192,16 @@ export default function App() {
         // Handle network errors (common on mobile)
         let errorMsg = "Network error";
         if (fetchError.name === "AbortError") {
-          errorMsg = "Request timed out. Please check your internet connection and try again.";
+          errorMsg =
+            "Request timed out. Please check your internet connection and try again.";
         } else if (fetchError.message.includes("Failed to fetch")) {
           errorMsg = `Cannot connect to server. URL: ${API_URL}/chat. Please check your internet connection.`;
         } else {
-          errorMsg = `Network error: ${fetchError.message || "Failed to connect"}. Please check your internet connection.`;
+          errorMsg = `Network error: ${
+            fetchError.message || "Failed to connect"
+          }. Please check your internet connection.`;
         }
-        
+
         // Show visible error
         setErrorMessage({
           type: "network",
@@ -216,12 +226,13 @@ export default function App() {
           // Not JSON, use text as is
           errorMsg = errorText || errorMsg;
         }
-        
+
         // Show visible error for server errors
         if (res.status === 404) {
           setErrorMessage({
             type: "server",
-            message: "Function not found. Please check Netlify function deployment.",
+            message:
+              "Function not found. Please check Netlify function deployment.",
             details: `Status: ${res.status}. URL: ${API_URL}/chat`,
           });
         } else if (res.status === 500) {
@@ -237,12 +248,15 @@ export default function App() {
             details: `Status: ${res.status}`,
           });
         }
-        
+
         throw new Error(errorMsg);
       }
 
       const data = await res.json();
       console.log("Response data:", data);
+
+      // Clear debug message on success
+      setErrorMessage(null);
 
       const aiMessage = {
         sender: currentChat,
@@ -256,17 +270,21 @@ export default function App() {
     } catch (err) {
       console.error(`Error talking to ${currentChat}:`, err);
       console.error("Error details:", err.message, err.stack);
-      
+
       // Show error message to user in chat
       const chatErrorMessage = {
         sender: currentChat,
-        text: `Sorry, I'm having trouble connecting right now. ${err.message.includes("Network") ? "Please check your internet connection." : "Please try again later."}`,
+        text: `Sorry, I'm having trouble connecting right now. ${
+          err.message.includes("Network")
+            ? "Please check your internet connection."
+            : "Please try again later."
+        }`,
         displayText: "",
         timestamp: new Date(),
         fullyTyped: true,
       };
       setMessages((m) => [...m, chatErrorMessage]);
-      
+
       // Keep visible error banner if not already set
       if (!errorMessage) {
         setErrorMessage({
@@ -461,36 +479,48 @@ export default function App() {
       <div className="main-container">
         {/* Error Banner - Visible on Mobile */}
         {errorMessage && (
-          <div className="error-banner" style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            backgroundColor: "#ff4444",
-            color: "white",
-            padding: "12px 16px",
-            zIndex: 9999,
-            fontSize: "14px",
-            fontWeight: "600",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
-          }}>
-            <div style={{ marginBottom: "4px" }}>⚠️ {errorMessage.message}</div>
-            <div style={{ fontSize: "12px", opacity: 0.9 }}>{errorMessage.details}</div>
+          <div
+            className="error-banner"
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              backgroundColor: errorMessage.type === "debug" ? "#ffaa00" : "#ff4444",
+              color: "white",
+              padding: "16px 20px",
+              zIndex: 99999,
+              fontSize: "16px",
+              fontWeight: "700",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+              borderBottom: "3px solid rgba(255,255,255,0.3)",
+            }}
+          >
+            <div style={{ marginBottom: "6px", fontSize: "18px" }}>
+              {errorMessage.type === "debug" ? "🔄" : "⚠️"} {errorMessage.message}
+            </div>
+            <div style={{ fontSize: "13px", opacity: 0.95, lineHeight: "1.4" }}>
+              {errorMessage.details}
+            </div>
             <button
               onClick={() => setErrorMessage(null)}
               style={{
                 position: "absolute",
-                top: "8px",
-                right: "8px",
-                background: "rgba(255,255,255,0.3)",
-                border: "none",
+                top: "12px",
+                right: "12px",
+                background: "rgba(255,255,255,0.4)",
+                border: "2px solid white",
                 color: "white",
-                width: "24px",
-                height: "24px",
+                width: "28px",
+                height: "28px",
                 borderRadius: "50%",
                 cursor: "pointer",
-                fontSize: "16px",
+                fontSize: "18px",
                 fontWeight: "bold",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                lineHeight: "1",
               }}
             >
               ×
