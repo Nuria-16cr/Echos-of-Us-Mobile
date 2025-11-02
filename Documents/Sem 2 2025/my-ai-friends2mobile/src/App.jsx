@@ -150,20 +150,35 @@ export default function App() {
         /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
       );
 
-      const res = await fetch(`${API_URL}/chat`, {
+      // For mobile browsers, we need explicit CORS and no credentials
+      const fetchOptions = {
         method: "POST",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
+          "Accept": "application/json",
         },
         body: JSON.stringify({
           prompt: input,
           persona: currentChat,
         }),
-        credentials: "same-origin", // Important for mobile
-      }).catch((fetchError) => {
+        mode: "cors", // Explicit CORS mode for mobile
+        cache: "no-cache", // Don't cache requests
+      };
+
+      console.log("Fetch options:", JSON.stringify(fetchOptions, null, 2));
+      console.log("Fetch URL:", `${API_URL}/chat`);
+
+      const res = await fetch(`${API_URL}/chat`, fetchOptions).catch((fetchError) => {
         // Handle network errors (common on mobile)
         console.error("Network error:", fetchError);
-        throw new Error(`Network error: ${fetchError.message}. Please check your internet connection.`);
+        console.error("Error type:", fetchError.constructor.name);
+        console.error("Error details:", {
+          name: fetchError.name,
+          message: fetchError.message,
+        });
+        throw new Error(
+          `Network error: ${fetchError.message || "Failed to connect"}. Please check your internet connection.`
+        );
       });
 
       console.log("Response status:", res.status);
