@@ -128,24 +128,23 @@ export default function App() {
         // Custom API URL from environment variable (for external backend)
         API_URL = import.meta.env.VITE_API_URL;
       } else if (
-        window.location.hostname.includes("netlify.app") ||
-        window.location.hostname.includes("netlify.com") ||
-        (window.location.hostname !== "localhost" &&
-          window.location.hostname !== "127.0.0.1" &&
-          !window.location.hostname.includes("192.168.") &&
-          !window.location.hostname.includes("10."))
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1" ||
+        window.location.hostname.startsWith("192.168.") ||
+        window.location.hostname.startsWith("10.")
       ) {
-        // Deployed on Netlify or production - use Netlify function
-        // Use absolute URL for mobile browsers to avoid CORS issues
-        API_URL = `${window.location.origin}/.netlify/functions`;
-      } else {
         // Local development
         API_URL = "http://localhost:3001";
+      } else {
+        // Production (Netlify, GitHub Pages, or any deployed site)
+        // Always use absolute URL for mobile browsers
+        API_URL = `${window.location.origin}/.netlify/functions`;
       }
 
       console.log("Attempting to call:", `${API_URL}/chat`);
       console.log("Hostname:", window.location.hostname);
       console.log("Origin:", window.location.origin);
+      console.log("Full URL:", window.location.href);
       console.log(
         "Is mobile:",
         /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
