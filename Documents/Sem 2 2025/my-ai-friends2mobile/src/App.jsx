@@ -106,8 +106,20 @@ export default function App() {
   }, [messages]);
 
   const sendMessage = async (e) => {
-    e.preventDefault();
-    if (!input.trim()) return;
+    if (e) e.preventDefault();
+    
+    // IMMEDIATE VISIBLE TEST - show this message right away
+    const testMessage = { 
+      sender: "You", 
+      text: `[TEST] Button clicked! Input: "${input}"`, 
+      timestamp: new Date() 
+    };
+    setMessages((m) => [...m, testMessage]);
+    
+    if (!input.trim()) {
+      // Show test message even if input is empty
+      return;
+    }
 
     // Clear previous errors
     setErrorMessage(null);
@@ -151,7 +163,6 @@ export default function App() {
     }
 
     try {
-
       console.log("Attempting to call:", `${API_URL}/chat`);
       console.log("Hostname:", window.location.hostname);
       console.log("Origin:", window.location.origin);
@@ -295,17 +306,26 @@ export default function App() {
 
       // Show detailed error message in chat (guaranteed visibility)
       let errorText = `❌ ERROR: ${err.message}`;
-      
-      if (err.message.includes("Network") || err.message.includes("Failed to fetch")) {
+
+      if (
+        err.message.includes("Network") ||
+        err.message.includes("Failed to fetch")
+      ) {
         errorText = `❌ Cannot connect to server.\n\nTrying: ${errorAPI_URL}/chat\n\nPlease check:\n1. Internet connection\n2. Netlify function is deployed\n3. OPENAI_API_KEY is set in Netlify`;
-      } else if (err.message.includes("404") || err.message.includes("Function not found")) {
+      } else if (
+        err.message.includes("404") ||
+        err.message.includes("Function not found")
+      ) {
         errorText = `❌ Function not found (404)\n\nNetlify function may not be deployed.\n\nCheck: Netlify dashboard → Functions`;
-      } else if (err.message.includes("500") || err.message.includes("API key")) {
+      } else if (
+        err.message.includes("500") ||
+        err.message.includes("API key")
+      ) {
         errorText = `❌ Server error (500)\n\nOPENAI_API_KEY may not be configured.\n\nCheck: Netlify → Site settings → Environment variables`;
       } else if (err.message.includes("timeout")) {
         errorText = `❌ Request timed out\n\nServer took too long to respond.\n\nThis might be a network issue.`;
       }
-      
+
       const chatErrorMessage = {
         sender: currentChat,
         text: errorText,
@@ -815,7 +835,10 @@ export default function App() {
                       onChange={(e) => setInput(e.target.value)}
                     />
                   </div>
-                  <button type="submit" className="send-icon">
+                  <button 
+                    type="submit" 
+                    className="send-icon"
+                  >
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                       <path
                         d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13"
