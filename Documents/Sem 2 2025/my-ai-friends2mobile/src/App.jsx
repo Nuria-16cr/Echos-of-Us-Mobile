@@ -183,6 +183,16 @@ export default function App() {
         /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
       );
 
+      // Show immediate status message
+      const statusMessage = {
+        sender: currentChat,
+        text: `⏳ Connecting to server...\nURL: ${API_URL}/chat`,
+        displayText: "",
+        timestamp: new Date(),
+        fullyTyped: true,
+      };
+      setMessages((m) => [...m, statusMessage]);
+
       // For mobile browsers, we need explicit CORS and no credentials
       const fetchOptions = {
         method: "POST",
@@ -367,7 +377,13 @@ export default function App() {
       // Always clear loading on error
       setLoading(false);
       setIsTyping(false);
-      clearTimeout(timeoutId);
+      
+      // IMPORTANT: Force clear the timeout
+      try {
+        clearTimeout(timeoutId);
+      } catch (e) {
+        // Ignore timeout clear errors
+      }
     }
 
   const formatTime = (date) => {
