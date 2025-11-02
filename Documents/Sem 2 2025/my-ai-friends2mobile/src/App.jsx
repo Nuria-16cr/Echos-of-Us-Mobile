@@ -107,17 +107,8 @@ export default function App() {
 
   const sendMessage = async (e) => {
     if (e) e.preventDefault();
-    
-    // IMMEDIATE VISIBLE TEST - show this message right away
-    const testMessage = { 
-      sender: "You", 
-      text: `[TEST] Button clicked! Input: "${input}"`, 
-      timestamp: new Date() 
-    };
-    setMessages((m) => [...m, testMessage]);
-    
+
     if (!input.trim()) {
-      // Show test message even if input is empty
       return;
     }
 
@@ -125,9 +116,29 @@ export default function App() {
     setErrorMessage(null);
 
     const userMessage = { sender: "You", text: input, timestamp: new Date() };
+    const currentInput = input; // Save input value
     setMessages((m) => [...m, userMessage]);
     setInput("");
     setLoading(true);
+    
+    // Fallback timeout - if still loading after 32 seconds, show error
+    const timeoutId = setTimeout(() => {
+      setLoading((currentLoading) => {
+        if (currentLoading) {
+          setLoading(false);
+          setIsTyping(false);
+          const timeoutError = {
+            sender: currentChat,
+            text: `❌ Request timed out\n\nNo response after 32 seconds.\n\nPossible issues:\n1. Netlify function not deployed\n2. OPENAI_API_KEY not set in Netlify\n3. Network connection problem\n\nCheck: Netlify dashboard → Functions tab`,
+            displayText: "",
+            timestamp: new Date(),
+            fullyTyped: true,
+          };
+          setMessages((m) => [...m, timeoutError]);
+        }
+        return false;
+      });
+    }, 32000);
 
     // Update last used time when sending a message
     const newTime = new Date();
@@ -192,7 +203,7 @@ export default function App() {
 
       // Add timeout for mobile networks (30 seconds)
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000);
+      const fetchTimeoutId = setTimeout(() => controller.abort(), 30000);
 
       let res;
       try {
@@ -200,9 +211,11 @@ export default function App() {
           ...fetchOptions,
           signal: controller.signal,
         });
-        clearTimeout(timeoutId);
+        clearTimeout(fetchTimeoutId);
+        clearTimeout(timeoutId); // Clear the fallback timeout
       } catch (fetchError) {
-        clearTimeout(timeoutId);
+        clearTimeout(fetchTimeoutId);
+        clearTimeout(timeoutId); // Clear the fallback timeout
         // Handle network errors (common on mobile)
         let errorMsg = "Network error";
         if (fetchError.name === "AbortError") {
@@ -266,8 +279,23 @@ export default function App() {
         throw new Error(errorMsg);
       }
 
-      const data = await res.json();
+      // Check if response is actually JSON
+      let data;
+      try {
+        const text = await res.text();
+        if (!text) {
+          throw new Error("Empty response from server");
+        }
+        data = JSON.parse(text);
+      } catch (parseError) {
+        throw new Error(`Server response error: ${parseError.message || "Invalid response"}`);
+      }
+
       console.log("Response data:", data);
+
+      if (!data || !data.reply) {
+        throw new Error("Server returned invalid response format");
+      }
 
       // Clear debug message on success
       setErrorMessage(null);
@@ -281,6 +309,7 @@ export default function App() {
       };
       setMessages((m) => [...m, aiMessage]);
       setIsTyping(true);
+      clearTimeout(timeoutId); // Clear the fallback timeout on success
     } catch (err) {
       console.error(`Error talking to ${currentChat}:`, err);
       console.error("Error details:", err.message, err.stack);
@@ -334,19 +363,12 @@ export default function App() {
         fullyTyped: true,
       };
       setMessages((m) => [...m, chatErrorMessage]);
-
-      // Keep visible error banner if not already set
-      if (!errorMessage) {
-        setErrorMessage({
-          type: "unknown",
-          message: err.message,
-          details: "An unexpected error occurred",
-        });
-      }
-    } finally {
+      
+      // Always clear loading on error
       setLoading(false);
+      setIsTyping(false);
+      clearTimeout(timeoutId);
     }
-  };
 
   const formatTime = (date) => {
     return date.toLocaleTimeString("en-US", {
@@ -835,10 +857,7 @@ export default function App() {
                       onChange={(e) => setInput(e.target.value)}
                     />
                   </div>
-                  <button 
-                    type="submit" 
-                    className="send-icon"
-                  >
+                  <button type="submit" className="send-icon">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                       <path
                         d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13"
