@@ -152,15 +152,23 @@ export default function App() {
 
       const res = await fetch(`${API_URL}/chat`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           prompt: input,
           persona: currentChat,
         }),
+        credentials: "same-origin", // Important for mobile
+      }).catch((fetchError) => {
+        // Handle network errors (common on mobile)
+        console.error("Network error:", fetchError);
+        throw new Error(`Network error: ${fetchError.message}. Please check your internet connection.`);
       });
 
       console.log("Response status:", res.status);
       console.log("Response ok:", res.ok);
+      console.log("Response headers:", res.headers);
 
       if (!res.ok) {
         const errorText = await res.text();
