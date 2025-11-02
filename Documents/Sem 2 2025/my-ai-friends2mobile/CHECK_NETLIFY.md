@@ -23,6 +23,7 @@ Try visiting this URL in your browser:
 `https://echos-of-us-mobile.netlify.app/.netlify/functions/chat`
 
 **What happens?**
+
 - ✅ Shows an error about POST method → Function EXISTS (good!)
 - ❌ Shows 404 Not Found → Function does NOT exist (problem!)
 - ❌ Shows nothing/timeout → Function might not be deployed
@@ -32,4 +33,3 @@ Try visiting this URL in your browser:
 1. **Function not deployed** → Make sure `/netlify/functions/chat.js` exists in your repo
 2. **OPENAI_API_KEY missing** → Add it in Netlify dashboard → Environment variables
 3. **Need to redeploy** → After adding API key, trigger a new deployment
-

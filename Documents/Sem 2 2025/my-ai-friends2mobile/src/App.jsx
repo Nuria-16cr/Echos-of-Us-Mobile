@@ -113,9 +113,12 @@ export default function App() {
     }
 
     // Determine API URL
-    const API_URL = window.location.hostname === "localhost" 
-      ? "http://localhost:3001"
-      : `${window.location.origin}/.netlify/functions`;
+    // Priority: 1. VITE_API_URL (Railway/Render backend), 2. Netlify functions, 3. Localhost
+    const API_URL = import.meta.env.VITE_API_URL 
+      ? import.meta.env.VITE_API_URL
+      : window.location.hostname === "localhost" 
+        ? "http://localhost:3001"
+        : `${window.location.origin}/.netlify/functions`;
 
     // Clear previous errors
     setErrorMessage(null);
