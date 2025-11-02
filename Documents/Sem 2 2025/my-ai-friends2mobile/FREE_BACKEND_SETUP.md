@@ -42,4 +42,3 @@ After deploying, I'll help you update the frontend to use your Railway/Render UR
 3. **Redeploy** your site
 
 That's it! No more Netlify Functions needed.
-

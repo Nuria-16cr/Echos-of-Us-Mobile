@@ -3,6 +3,7 @@
 ## 1. Go to Railway
 
 Visit: https://railway.app
+
 - Sign up with GitHub (free)
 - Click "New Project"
 - Click "Deploy from GitHub repo"
@@ -34,7 +35,6 @@ Visit: https://railway.app
 4. **Save**
 5. **Trigger deploy** → **Clear cache and deploy site**
 
-## Done! 
+## Done!
 
 Your frontend will now use Railway backend (no Netlify credits needed).
-

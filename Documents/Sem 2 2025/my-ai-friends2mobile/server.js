@@ -253,6 +253,11 @@ app.post("/chat", async (req, res) => {
 });
 
 // --- 🚀 Start server ---
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
+});
+
+// Health check endpoint for Railway
+app.get("/", (req, res) => {
+  res.json({ status: "ok", message: "Echos API is running" });
 });
