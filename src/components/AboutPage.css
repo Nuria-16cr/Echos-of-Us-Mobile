@@ -1,0 +1,611 @@
+/* Mobile-First Responsive Design - About Page */
+
+.about-page {
+  width: 100%;
+  max-width: 1920px;
+  margin: 0 auto;
+  background: #7687b4;
+  color: #ffffff;
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-bottom: 0;
+}
+
+/* Background Image */
+.about-background-image {
+  position: absolute;
+  top: 400px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 1500px;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.about-background-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Smooth Gradient Overlay */
+.about-blur-overlay {
+  position: absolute;
+  top: 400px;
+  left: 0;
+  width: 100%;
+  height: 250px;
+  background: linear-gradient(
+    to bottom,
+    #7687b4 0%,
+    rgba(118, 135, 180, 0.9) 30%,
+    rgba(118, 135, 180, 0.7) 60%,
+    rgba(118, 135, 180, 0.3) 80%,
+    transparent 100%
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* ECHOS Logo */
+.about-logo-container {
+  position: relative;
+  padding: 20px;
+  z-index: 2;
+}
+
+.about-main-logo {
+  height: 35px;
+  width: auto;
+  filter: brightness(0) invert(1);
+}
+
+/* Navigation */
+.about-nav-bar {
+  position: relative;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  z-index: 1;
+  flex-wrap: wrap;
+}
+
+.about-nav-item {
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  color: #152246;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+  padding: 8px 12px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.about-nav-item-active {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.about-nav-item:active {
+  opacity: 0.8;
+}
+
+/* Title */
+.about-title {
+  position: relative;
+  padding: 20px;
+  font-family: "Gotham", sans-serif;
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 38px;
+  color: #ffffff;
+  margin: 0;
+  z-index: 2;
+}
+
+/* Main Content Sections */
+.about-content-sections {
+  position: relative;
+  width: 100%;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.about-left-column {
+  width: 100%;
+}
+
+.about-right-column {
+  width: 100%;
+}
+
+/* About Text */
+.about-text {
+  font-family: "Inter", sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 24px;
+  color: #ffffff;
+  margin: 0;
+}
+
+/* Features Section */
+.about-features-section {
+  position: relative;
+  width: calc(100% - 40px);
+  margin: 40px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  z-index: 2;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.about-features-icon {
+  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  transform: rotate(-90deg);
+}
+
+.about-features-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-family: "Gotham", sans-serif;
+  font-weight: 300;
+  font-size: 20px;
+  line-height: 28px;
+  color: #ffffff;
+}
+
+.about-features-list li {
+  margin-bottom: 8px;
+}
+
+/* Quote Section */
+.about-quote-section {
+  position: relative;
+  width: 100%;
+  min-height: 300px;
+  background: #7687b4;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  box-sizing: border-box;
+  margin-top: 40px;
+}
+
+.about-quote-content {
+  width: 100%;
+  max-width: 800px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.about-quote-main {
+  font-family: "Inter", sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 24px;
+  color: #ffffff;
+  margin: 0;
+  width: 100%;
+}
+
+.about-quote-attribution {
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 24px;
+  color: #ffffff;
+  text-align: left;
+  width: 100%;
+  margin: 0;
+}
+
+.about-quote-echo {
+  display: block;
+  margin-top: 12px;
+}
+
+/* Footer Section */
+.about-footer-section {
+  position: relative;
+  width: 100%;
+  min-height: 400px;
+  background: #b6bed7;
+  z-index: 2;
+  padding: 40px 20px;
+  box-sizing: border-box;
+  margin-top: 40px;
+}
+
+.about-footer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.about-footer-column {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.about-footer-text-large {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 22px;
+  color: #505050;
+  margin: 0 0 20px 0;
+}
+
+.about-social-icons {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.about-social-icon {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  cursor: pointer;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.about-social-icon-twitter {
+  width: 36px;
+  height: 30px;
+  object-fit: contain;
+}
+
+.about-footer-nav {
+  gap: 16px;
+}
+
+.about-footer-nav p {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+  color: #505050;
+  margin: 0;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+  padding: 8px 0;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.about-footer-nav p:active {
+  opacity: 0.7;
+}
+
+.about-footer-contact {
+  gap: 20px;
+}
+
+.about-contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.about-contact-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.about-email-icon {
+  width: 20px;
+  height: 24px;
+}
+
+.about-contact-item p {
+  font-family: "PP Nikkei Journal", sans-serif;
+  font-weight: 300;
+  font-size: 15px;
+  line-height: 22px;
+  color: #505050;
+  margin: 0;
+  flex: 1;
+}
+
+.about-footer-newsletter {
+  width: 100%;
+}
+
+.about-newsletter-form {
+  position: relative;
+  width: 100%;
+  max-width: 293px;
+  height: 49px;
+  margin-top: 20px;
+}
+
+.about-email-input {
+  width: 100%;
+  height: 48px;
+  background: #f7f8f4;
+  border: none;
+  border-radius: 40px;
+  padding: 0 100px 0 18px;
+  font-family: "PP Nikkei Journal", sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  color: #a4a0a0;
+  outline: none;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.about-join-btn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 90px;
+  height: 49px;
+  background: #152246;
+  border: none;
+  border-radius: 50px;
+  font-family: "PP Nikkei Maru", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 18px;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 49px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.about-join-btn:active {
+  background: #1a2d5f;
+  transform: scale(0.98);
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+  .about-page {
+    min-height: auto;
+    padding: 0 20px;
+  }
+}
+
+/* Large Desktop */
+@media (min-width: 1440px) {
+  .about-page {
+    max-width: 1600px;
+    padding: 0 40px;
+  }
+}
+
+/* Ultra Wide Screens */
+@media (min-width: 1920px) {
+  .about-page {
+    max-width: 1800px;
+  }
+}
+
+/* Reapply tablet styles */
+@media (min-width: 768px) {
+  .about-background-image {
+    top: 461px;
+    height: 1931px;
+  }
+
+  .about-blur-overlay {
+    top: 461px;
+    height: 295px;
+  }
+
+  .about-logo-container {
+    position: absolute;
+    top: 41px;
+    left: 50px;
+    padding: 0;
+  }
+
+  .about-nav-bar {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+    padding: 0;
+    gap: 100px;
+  }
+
+  .about-nav-item {
+    font-size: 20px;
+    line-height: 24px;
+    padding: 0;
+  }
+
+  .about-title {
+    position: absolute;
+    top: 222px;
+    left: 68px;
+    width: 245px;
+    height: 77px;
+    font-size: 50px;
+    line-height: 60px;
+    padding: 0;
+  }
+
+  .about-content-sections {
+    position: absolute;
+    top: 313px;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0 68px;
+    gap: 137px;
+  }
+
+  .about-left-column {
+    width: 497px;
+  }
+
+  .about-right-column {
+    width: 497px;
+  }
+
+  .about-text {
+    font-size: 20px;
+  }
+
+  .about-features-section {
+    position: absolute;
+    top: 925px;
+    left: 181px;
+    width: 702px;
+    flex-direction: row;
+    align-items: center;
+    gap: 21px;
+    margin: 0;
+    padding: 0;
+  }
+
+  .about-features-icon {
+    width: 92px;
+    height: 84.22px;
+  }
+
+  .about-features-list {
+    font-size: 32px;
+    line-height: 38.4px;
+  }
+
+  .about-features-list li {
+    margin-bottom: 0;
+  }
+
+  .about-quote-section {
+    position: absolute;
+    top: 1562px;
+    padding: 0;
+    margin: 0;
+    height: 372px;
+  }
+
+  .about-quote-content {
+    width: 1162px;
+    padding: 0 76px;
+    gap: 22px;
+  }
+
+  .about-quote-main {
+    font-size: 20px;
+  }
+
+  .about-quote-attribution {
+    font-size: 25px;
+    line-height: 30px;
+    text-align: center;
+    width: 803px;
+    margin: 0 auto;
+  }
+
+  .about-quote-echo {
+    margin-top: 20px;
+  }
+
+  .about-footer-section {
+    position: absolute;
+    top: 2106px;
+    padding: 59px 5%;
+    height: 286px;
+    margin: 0;
+  }
+
+  .about-footer-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr 3fr 2.5fr;
+    gap: 70px 55px;
+  }
+
+  .about-footer-text-large {
+    font-size: 18px;
+    line-height: 26px;
+  }
+
+  .about-social-icon {
+    width: 45px;
+    height: 45px;
+  }
+
+  .about-social-icon-twitter {
+    width: 40px;
+    height: 33px;
+  }
+
+  .about-footer-nav p {
+    font-size: 18px;
+  }
+
+  .about-contact-icon {
+    width: 29px;
+    height: 29px;
+  }
+
+  .about-email-icon {
+    width: 22px;
+    height: 27px;
+  }
+
+  .about-contact-item p {
+    font-size: 18px;
+    line-height: 26px;
+  }
+
+  .about-newsletter-form {
+    width: 293px;
+    margin-top: 36px;
+  }
+
+  .about-email-input {
+    padding: 0 120px 0 18px;
+    font-size: 18px;
+  }
+
+  .about-join-btn {
+    width: 99px;
+    font-size: 18px;
+  }
+}

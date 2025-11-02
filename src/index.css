@@ -1,0 +1,1060 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+    "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #7687b4;
+  color: #1d1d1f;
+  overflow-x: hidden;
+  touch-action: pan-y;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+.app {
+  width: 100%;
+  min-height: 100vh;
+  background: #7687b4;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+/* Main Container */
+.main-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  max-width: 1600px;
+  margin: 0 auto;
+  background: #7687b4;
+  box-shadow: none;
+  gap: 0;
+  position: relative;
+  width: 100%;
+  padding: 0 14px;
+  box-sizing: border-box;
+}
+
+.main-content-wrapper {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Sidebar - Figma Design */
+.sidebar {
+  width: 393px;
+  min-width: 393px;
+  background: #7687b4;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+  position: relative;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* Sidebar Header */
+.sidebar-header {
+  padding: 0;
+  display: flex;
+  align-items: center;
+  padding-left: 52px;
+  padding-top: 68px;
+  padding-bottom: 60px;
+  z-index: 10;
+  position: relative;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sidebar-logo {
+  height: auto;
+  width: auto;
+  max-width: 240px;
+  max-height: 43px;
+  width: 240px;
+  height: 43px;
+  display: block;
+  filter: none;
+  object-fit: contain;
+  z-index: 10;
+  position: relative;
+}
+
+.header-icon-button {
+  background: transparent;
+  border: none;
+  width: 34px;
+  height: 34px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  box-shadow: 0px 4px 16px rgba(217, 217, 217, 0.32);
+  flex-shrink: 0;
+}
+
+.header-icon-button:hover {
+  opacity: 0.8;
+}
+
+/* All Echos Text */
+.sidebar-all-echos {
+  padding: 6px 20px 1px 20px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.all-echos-text {
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 17px;
+  color: #ffffff;
+}
+
+.header-icon-button svg path {
+  stroke: #000000;
+}
+
+/* Search Bar */
+.search-container {
+  padding: 1px 20px 4px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: #f8f9fd;
+  border-radius: 10px;
+  padding: 8px 16px;
+  gap: 4px;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0px 2.8235294818878174px 11.29411792755127px
+    rgba(217, 217, 217, 0.32);
+  transition: all 0.3s ease;
+}
+
+.search-bar:focus-within {
+  box-shadow: 0px 2.8235294818878174px 11.29411792755127px
+    rgba(217, 217, 217, 0.5);
+}
+
+.search-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.search-input {
+  border: none;
+  background: transparent;
+  outline: none;
+  flex: 1;
+  font-size: 11px;
+  color: #1d1d1f;
+  font-weight: 400;
+  font-family: "Inter", sans-serif;
+}
+
+.search-input::placeholder {
+  color: #9fa7be;
+}
+
+/* Create Echo Button - HIDDEN */
+.create-echo {
+  display: none;
+}
+
+.plus-icon {
+  display: none;
+}
+
+/* Chat Rooms List */
+.chat-rooms {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 20px 20px;
+}
+
+.chat-room {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0px 16px 24px;
+  margin-bottom: 6px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #3553a4;
+  border: 1px solid #3553a4;
+  box-sizing: border-box;
+}
+
+.chat-room:hover {
+  opacity: 0.9;
+}
+
+/* Active state colors for each person */
+.chat-room[data-persona="Alex"].active {
+  background: #d6b9ca;
+  border: 1px solid #d6b9ca;
+  color: #000000;
+}
+
+.chat-room[data-persona="Noah"].active {
+  background: #a08bc1;
+  border: 1px solid #a08bc1;
+  color: #000000;
+}
+
+.chat-room[data-persona="Ellis"].active {
+  background: #edd2ae;
+  border: 1px solid #edd2ae;
+  color: #000000;
+}
+
+.chat-room[data-persona="Robin"].active {
+  background: #969d88;
+  border: 1px solid #969d88;
+  color: #000000;
+}
+
+.chat-room.active .chat-header h4,
+.chat-room.active .chat-time,
+.chat-room.active .chat-time span {
+  color: #000000;
+}
+
+.chat-avatar {
+  width: 35px;
+  height: 35px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.chat-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.chat-room .chat-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.chat-room .chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0;
+  padding: 0;
+}
+
+.chat-room .chat-header h4 {
+  font-size: 15px;
+  font-weight: 500;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+  font-family: "Inter", sans-serif;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  margin-bottom: -12px;
+}
+
+.star-icon {
+  display: none;
+}
+
+.chat-preview {
+  display: none;
+}
+
+.chat-room .chat-time {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: #ffffff;
+  font-weight: 400;
+  font-family: "Inter", sans-serif;
+  margin: 0;
+  padding: 0;
+  margin-top: -12px;
+  margin-bottom: 16px;
+}
+
+.chat-room .chat-time span {
+  color: #ffffff;
+}
+
+.clock-icon {
+  width: 12px;
+  height: 12px;
+}
+
+.time-info {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.separator {
+  width: 1px;
+  height: 12px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Chat Area - Figma Design */
+.chat-area {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border-radius: 40px;
+  overflow: hidden;
+  flex: 1;
+  margin: 14px;
+  flex-shrink: 0;
+  height: calc(100vh - 60px);
+  min-width: 0;
+}
+
+/* Chat area colors for each persona */
+.chat-area[data-persona="Alex"] {
+  background: #d6b9ca;
+}
+
+.chat-area[data-persona="Noah"] {
+  background: #b3a5c8;
+}
+
+.chat-area[data-persona="Ellis"] {
+  background: #edd2ae;
+}
+
+.chat-area[data-persona="Robin"] {
+  background: #969d88;
+}
+
+/* Background Ellipses */
+.chat-area::before,
+.chat-area::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(50px);
+  pointer-events: none;
+  z-index: 0;
+  animation: breathe 4s ease-in-out infinite, float 8s ease-in-out infinite;
+}
+
+.chat-area::before {
+  width: 315px;
+  height: 315px;
+  top: 319px;
+  left: 116px;
+  animation-delay: 0s, 0s;
+}
+
+.chat-area::after {
+  width: 186px;
+  height: 186px;
+  top: 99px;
+  left: 443px;
+  animation-delay: 2s, 4s;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(15px, -20px) scale(1.08);
+  }
+  50% {
+    transform: translate(-10px, 15px) scale(1.15);
+  }
+  75% {
+    transform: translate(20px, 10px) scale(1.08);
+  }
+}
+
+/* Background ellipses colors for each persona */
+.chat-area[data-persona="Alex"]::before,
+.chat-area[data-persona="Alex"]::after {
+  background: #a95890;
+}
+
+.chat-area[data-persona="Noah"]::before,
+.chat-area[data-persona="Noah"]::after {
+  background: #5f3f8c;
+}
+
+.chat-area[data-persona="Ellis"]::before,
+.chat-area[data-persona="Ellis"]::after {
+  background: #cc5539;
+}
+
+.chat-area[data-persona="Robin"]::before,
+.chat-area[data-persona="Robin"]::after {
+  background: #4b543f;
+}
+
+/* Chat Header - Figma Design */
+.chat-header {
+  padding: 16px 24px;
+  border-bottom: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  position: relative;
+  z-index: 2;
+  height: 78px;
+  box-sizing: border-box;
+}
+
+.user-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  position: relative;
+}
+
+.user-avatar {
+  width: 35px;
+  height: 35px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-info h3 {
+  font-size: 20px;
+  font-weight: 500;
+  font-family: "Gotham", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  font-style: normal;
+  letter-spacing: 0;
+  line-height: 1.2em;
+  color: #231f28;
+  margin: 0;
+}
+
+.user-info > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.user-tone {
+  font-size: 12px;
+  font-weight: 400;
+  font-style: normal;
+  font-family: "Inter", sans-serif;
+  color: #231f28;
+  position: static;
+  width: auto;
+  height: auto;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.echo-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #231f28;
+  font-weight: 400;
+  font-family: "Inter", sans-serif;
+}
+
+.echo-status-circle {
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  background: #b43a3a;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+/* Messages Container - Figma Design */
+.messages-container {
+  flex: 1;
+  padding: 120px 45px 200px 45px;
+  overflow-y: auto;
+  position: relative;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 131px;
+  z-index: 1;
+}
+
+.messages-group {
+  display: flex;
+  flex-direction: column;
+  gap: 131px;
+}
+
+.message-bubble.right {
+  align-self: flex-end;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  max-width: 287px;
+}
+
+.message-bubble.left {
+  align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 287px;
+}
+
+.message-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.message-bubble.right .message-content {
+  align-items: flex-end;
+}
+
+.message-bubble.left .message-content {
+  align-items: flex-start;
+}
+
+.message-text {
+  padding: 16px 24px;
+  border-radius: 32px;
+  font-size: 16px;
+  line-height: 1.8;
+  word-wrap: break-word;
+  border: none;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  max-width: 100%;
+}
+
+.message-bubble.right .message-text {
+  background: #231f28;
+  color: #ffffff;
+  border-radius: 32px 32px 0px 32px;
+}
+
+.message-bubble.left .message-text {
+  color: #ffffff;
+  border-radius: 32px 32px 32px 0px;
+}
+
+/* Message bubble colors for each persona */
+.chat-area[data-persona="Alex"] .message-bubble.left .message-text {
+  background: #a95890;
+}
+
+.chat-area[data-persona="Noah"] .message-bubble.left .message-text {
+  background: #5f3f8c;
+}
+
+.chat-area[data-persona="Ellis"] .message-bubble.left .message-text {
+  background: #cc5539;
+}
+
+.chat-area[data-persona="Robin"] .message-bubble.left .message-text {
+  background: #4b543f;
+}
+
+.message-time {
+  font-size: 13px;
+  color: #ffffff;
+  font-weight: 400;
+  font-style: normal;
+  font-family: "Inter", sans-serif;
+  padding: 4px 0px 0px 0px;
+  line-height: 1.2102272327129657em;
+}
+
+.message-bubble.right .message-time {
+  padding: 4px 0px 0px 8px;
+  text-align: left;
+}
+
+.message-bubble.left .message-time {
+  padding: 4px 8px 0px 0px;
+  text-align: right;
+}
+
+.calibration-notice {
+  text-align: center;
+  padding: 12px 0;
+  margin-left: 407px;
+  margin-right: 14px;
+  display: block;
+  font-size: 11px;
+  color: #ffffff;
+  font-weight: 400;
+  font-family: "Inter", sans-serif;
+  width: calc(100% - 421px);
+  max-width: 100%;
+  flex-shrink: 0;
+}
+
+/* Message Input - Figma Design */
+.message-input-container {
+  padding: 16px 29px;
+  position: absolute;
+  left: 29px;
+  right: 29px;
+  bottom: 14px;
+  border-radius: 40px;
+  box-sizing: border-box;
+  z-index: 2;
+}
+
+/* Message input container colors for each persona */
+.chat-area[data-persona="Alex"] .message-input-container {
+  background: #a95890;
+}
+
+.chat-area[data-persona="Noah"] .message-input-container {
+  background: #5f3f8c;
+}
+
+.chat-area[data-persona="Ellis"] .message-input-container {
+  background: #cc5539;
+}
+
+.chat-area[data-persona="Robin"] .message-input-container {
+  background: #4b543f;
+}
+
+.message-input {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  justify-content: center;
+  width: 100%;
+}
+
+.emoji-icon {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.emoji-icon svg path,
+.emoji-icon svg circle {
+  stroke: #ffffff;
+}
+
+.input-field {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #f8f9fd;
+  border-radius: 24px;
+  padding: 12px 16px;
+  min-width: 0;
+}
+
+.input-line {
+  width: 0;
+  height: 16px;
+  border: 1px solid #ffffff;
+}
+
+.message-text-input {
+  border: none;
+  background: transparent;
+  outline: none;
+  flex: 1;
+  font-size: 11px;
+  color: #4b5563;
+  font-family: "Inter", sans-serif;
+  line-height: 1.6;
+  min-height: 24px;
+}
+
+.message-text-input::placeholder {
+  color: #9fa7be;
+  font-style: normal;
+}
+
+.send-icon {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.send-icon svg {
+  display: block;
+  transform: rotate(45deg);
+}
+
+.send-icon svg path {
+  stroke: #ffffff;
+}
+
+.back-arrow-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: opacity 0.3s ease;
+}
+
+.back-arrow-button:hover {
+  opacity: 0.8;
+}
+
+.back-arrow-button svg path {
+  stroke: #ffffff;
+}
+
+/* Responsive Design */
+/* Large screens at ~54.7cm / 2070px */
+@media (max-width: 2070px) {
+  .main-container {
+    padding: 0 10px;
+  }
+
+  .sidebar {
+    width: 320px;
+    min-width: 320px;
+  }
+
+  .sidebar-header {
+    padding-left: 30px;
+    padding-top: 50px;
+    padding-bottom: 40px;
+  }
+
+  .sidebar-logo {
+    width: 200px;
+    max-width: 200px;
+  }
+
+  .chat-area {
+    margin: 10px;
+  }
+
+  .calibration-notice {
+    margin-left: 330px;
+    width: calc(100% - 344px);
+  }
+}
+
+/* Medium screens (max-width: 1440px) */
+@media (max-width: 1440px) {
+  .sidebar {
+    width: 280px;
+    min-width: 280px;
+  }
+
+  .sidebar-header {
+    padding-left: 20px;
+    padding-top: 40px;
+    padding-bottom: 30px;
+  }
+
+  .sidebar-logo {
+    width: 180px;
+    max-width: 180px;
+  }
+
+  .messages-container {
+    padding: 80px 30px 160px 30px;
+    gap: 80px;
+  }
+
+  .calibration-notice {
+    margin-left: 290px;
+    width: calc(100% - 304px);
+    font-size: 10px;
+  }
+
+  .message-input-container {
+    left: 20px;
+    right: 20px;
+    padding: 14px 20px;
+  }
+}
+
+/* Small screens and tablets (max-width: 1024px) */
+@media (max-width: 1024px) {
+  .main-content-wrapper {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    min-width: 100%;
+    max-height: 200px;
+    order: 2;
+  }
+
+  .chat-area {
+    order: 1;
+    margin: 10px;
+    height: calc(100vh - 220px);
+    border-radius: 20px;
+  }
+
+  .calibration-notice {
+    margin: 10px auto;
+    width: calc(100% - 40px);
+    max-width: 800px;
+    order: 3;
+  }
+}
+
+/* Mobile devices (max-width: 768px) */
+@media (max-width: 768px) {
+  .main-container {
+    padding: 0 5px;
+  }
+
+  .sidebar {
+    max-height: 180px;
+  }
+
+  .sidebar-header {
+    padding: 20px 15px;
+  }
+
+  .sidebar-logo {
+    width: 150px;
+    max-width: 150px;
+  }
+
+  .sidebar-all-echos {
+    padding: 4px 15px;
+  }
+
+  .search-container {
+    padding: 4px 15px;
+  }
+
+  .chat-rooms {
+    padding: 0 15px 10px;
+  }
+
+  .chat-room {
+    padding: 12px 0px 12px 15px;
+    gap: 10px;
+  }
+
+  .chat-avatar {
+    width: 30px;
+    height: 30px;
+  }
+
+  .chat-room .chat-header h4 {
+    font-size: 13px;
+  }
+
+  .chat-room .chat-time {
+    font-size: 10px;
+  }
+
+  .chat-area {
+    margin: 5px;
+    height: calc(100vh - 190px);
+    border-radius: 15px;
+  }
+
+  .chat-header {
+    padding: 12px 15px;
+    height: auto;
+    min-height: 60px;
+  }
+
+  .user-info h3 {
+    font-size: 16px;
+  }
+
+  .user-tone {
+    font-size: 10px;
+  }
+
+  .echo-status {
+    font-size: 10px;
+  }
+
+  .echo-status-circle {
+    width: 16px;
+    height: 16px;
+  }
+
+  .messages-container {
+    padding: 60px 20px 140px 20px;
+    gap: 40px;
+  }
+
+  .messages-group {
+    gap: 40px;
+  }
+
+  .message-bubble.right,
+  .message-bubble.left {
+    max-width: 85%;
+  }
+
+  .message-text {
+    padding: 12px 18px;
+    font-size: 14px;
+  }
+
+  .message-time {
+    font-size: 11px;
+  }
+
+  .message-input-container {
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    padding: 12px 15px;
+    border-radius: 25px;
+  }
+
+  .message-input {
+    gap: 15px;
+  }
+
+  .input-field {
+    padding: 10px 12px;
+  }
+
+  .message-text-input {
+    font-size: 10px;
+  }
+
+  .emoji-icon,
+  .send-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .calibration-notice {
+    margin: 10px auto;
+    padding: 8px 0;
+    font-size: 9px;
+    width: calc(100% - 20px);
+  }
+}
+
+/* Very small mobile devices (max-width: 480px) */
+@media (max-width: 480px) {
+  .sidebar {
+    max-height: 160px;
+  }
+
+  .sidebar-header {
+    padding: 15px 10px;
+  }
+
+  .sidebar-logo {
+    width: 120px;
+    max-width: 120px;
+  }
+
+  .chat-area {
+    height: calc(100vh - 170px);
+  }
+
+  .messages-container {
+    padding: 40px 15px 120px 15px;
+    gap: 30px;
+  }
+
+  .message-bubble.right,
+  .message-bubble.left {
+    max-width: 90%;
+  }
+
+  .message-text {
+    padding: 10px 15px;
+    font-size: 13px;
+  }
+}
