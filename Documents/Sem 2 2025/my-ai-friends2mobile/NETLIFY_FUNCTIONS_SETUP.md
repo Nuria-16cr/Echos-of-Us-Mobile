@@ -76,3 +76,4 @@ After adding the environment variable, you MUST redeploy:
 ## That's It!
 
 Once you add `OPENAI_API_KEY` and redeploy, the chat should work! 🚀
+

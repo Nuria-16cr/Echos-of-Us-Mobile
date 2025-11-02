@@ -93,3 +93,4 @@ When asking for help, share:
 4. **Function status** (is it listed in Functions tab?)
 
 This will help diagnose the exact issue!
+

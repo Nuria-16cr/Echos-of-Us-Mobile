@@ -92,3 +92,4 @@ netlify deploy --prod
 - **404 errors?** The `_redirects` file should handle SPA routing
 - **API errors?** Make sure your backend is deployed and `VITE_API_URL` is set correctly
 - **CORS errors?** Ensure your backend has CORS enabled for your Netlify domain
+

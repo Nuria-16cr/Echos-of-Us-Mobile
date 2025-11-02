@@ -112,6 +112,11 @@ export default function App() {
       return;
     }
 
+    // Determine API URL
+    const API_URL = window.location.hostname === "localhost" 
+      ? "http://localhost:3001"
+      : `${window.location.origin}/.netlify/functions`;
+
     // Clear previous errors
     setErrorMessage(null);
 
@@ -215,6 +220,7 @@ export default function App() {
       const controller = new AbortController();
       const fetchTimeoutId = setTimeout(() => controller.abort(), 30000);
 
+      // SIMPLIFIED FETCH - Try with simple error handling
       let res;
       try {
         res = await fetch(`${API_URL}/chat`, {
@@ -222,30 +228,27 @@ export default function App() {
           signal: controller.signal,
         });
         clearTimeout(fetchTimeoutId);
-        clearTimeout(timeoutId); // Clear the fallback timeout
+        clearTimeout(timeoutId);
       } catch (fetchError) {
         clearTimeout(fetchTimeoutId);
-        clearTimeout(timeoutId); // Clear the fallback timeout
-        // Handle network errors (common on mobile)
-        let errorMsg = "Network error";
-        if (fetchError.name === "AbortError") {
-          errorMsg =
-            "Request timed out. Please check your internet connection and try again.";
-        } else if (fetchError.message.includes("Failed to fetch")) {
-          errorMsg = `Cannot connect to server. URL: ${API_URL}/chat. Please check your internet connection.`;
-        } else {
-          errorMsg = `Network error: ${
-            fetchError.message || "Failed to connect"
-          }. Please check your internet connection.`;
-        }
-
-        // Show visible error
-        setErrorMessage({
-          type: "network",
-          message: errorMsg,
-          details: `Trying to connect to: ${API_URL}/chat`,
-        });
-        throw new Error(errorMsg);
+        clearTimeout(timeoutId);
+        
+        // Show error in chat immediately
+        const errorMsg = fetchError.name === "AbortError"
+          ? "Request timed out after 30 seconds"
+          : `Failed to connect: ${fetchError.message || "Network error"}`;
+        
+        const chatError = {
+          sender: currentChat,
+          text: `❌ Error: ${errorMsg}\n\nTrying: ${API_URL}/chat\n\nCheck Netlify Functions tab`,
+          displayText: "",
+          timestamp: new Date(),
+          fullyTyped: true,
+        };
+        setMessages((m) => [...m, chatError]);
+        setLoading(false);
+        setIsTyping(false);
+        return; // Exit early on network error
       }
 
       console.log("Response status:", res.status);

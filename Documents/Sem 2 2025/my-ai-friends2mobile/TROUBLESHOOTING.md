@@ -140,3 +140,4 @@ If you're still stuck, share:
 - Browser console errors
 - Netlify function logs
 - Network request details
+
