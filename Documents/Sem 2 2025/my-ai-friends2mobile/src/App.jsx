@@ -12,18 +12,6 @@ export default function App() {
   const [currentChat, setCurrentChat] = useState("Alex");
   const [typingText, setTypingText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const [chatMemory, setChatMemory] = useState(() => {
-    // Initialize chat memory from localStorage per persona
-    const stored = localStorage.getItem("echosChatMemory");
-    if (stored) {
-      try {
-        return JSON.parse(stored);
-      } catch {
-        return {};
-      }
-    }
-    return {};
-  });
   const [lastUsedTimes, setLastUsedTimes] = useState(() => {
     // Initialize from localStorage or create empty object
     const stored = localStorage.getItem("echosLastUsedTimes");
@@ -43,14 +31,6 @@ export default function App() {
     setCurrentChat(personaName);
     setCurrentView("chat");
     setMessages([]); // Clear messages when switching personas
-    // Initialize memory for persona if doesn't exist
-    if (!chatMemory[personaName]) {
-      setChatMemory((prev) => {
-        const updated = { ...prev, [personaName]: [] };
-        localStorage.setItem("echosChatMemory", JSON.stringify(updated));
-        return updated;
-      });
-    }
     // Update last used time
     const newTime = new Date();
     setLastUsedTimes((prev) => {
@@ -142,24 +122,34 @@ export default function App() {
     });
 
     try {
-      // Determine API URL: Use Netlify function if deployed, otherwise use env var or localhost
+      // Determine API URL: Use Netlify function if deployed, otherwise use localhost
       let API_URL;
       if (import.meta.env.VITE_API_URL) {
-        // Custom API URL from environment variable
+        // Custom API URL from environment variable (for external backend)
         API_URL = import.meta.env.VITE_API_URL;
       } else if (
         window.location.hostname.includes("netlify.app") ||
-        window.location.hostname.includes("netlify.com")
+        window.location.hostname.includes("netlify.com") ||
+        (window.location.hostname !== "localhost" &&
+          window.location.hostname !== "127.0.0.1" &&
+          !window.location.hostname.includes("192.168.") &&
+          !window.location.hostname.includes("10."))
       ) {
-        // Deployed on Netlify - use Netlify function
-        API_URL = "/.netlify/functions";
+        // Deployed on Netlify or production - use Netlify function
+        // Use absolute URL for mobile browsers to avoid CORS issues
+        API_URL = `${window.location.origin}/.netlify/functions`;
       } else {
         // Local development
         API_URL = "http://localhost:3001";
       }
 
-      // Get current memory for this persona
-      const currentMemory = chatMemory[currentChat] || [];
+      console.log("Attempting to call:", `${API_URL}/chat`);
+      console.log("Hostname:", window.location.hostname);
+      console.log("Origin:", window.location.origin);
+      console.log(
+        "Is mobile:",
+        /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+      );
 
       const res = await fetch(`${API_URL}/chat`, {
         method: "POST",
@@ -167,24 +157,27 @@ export default function App() {
         body: JSON.stringify({
           prompt: input,
           persona: currentChat,
-          memory: currentMemory, // Send conversation memory
         }),
       });
 
+      console.log("Response status:", res.status);
+      console.log("Response ok:", res.ok);
+
       if (!res.ok) {
-        throw new Error(`API error: ${res.status} ${res.statusText}`);
+        const errorText = await res.text();
+        console.error("API Error:", res.status, errorText);
+        let errorMessage = `Server responded with ${res.status}`;
+        try {
+          const errorJson = JSON.parse(errorText);
+          errorMessage = errorJson.error || errorMessage;
+        } catch {
+          // Not JSON, use text as is
+        }
+        throw new Error(errorMessage);
       }
 
       const data = await res.json();
-
-      // Update memory with the response
-      if (data.memory) {
-        setChatMemory((prev) => {
-          const updated = { ...prev, [currentChat]: data.memory };
-          localStorage.setItem("echosChatMemory", JSON.stringify(updated));
-          return updated;
-        });
-      }
+      console.log("Response data:", data);
 
       const aiMessage = {
         sender: currentChat,
@@ -197,10 +190,11 @@ export default function App() {
       setIsTyping(true);
     } catch (err) {
       console.error(`Error talking to ${currentChat}:`, err);
+      console.error("Error details:", err.message, err.stack);
       // Show error message to user
       const errorMessage = {
         sender: currentChat,
-        text: "Sorry, I'm having trouble connecting right now. Please try again later.",
+        text: `Sorry, I'm having trouble connecting right now. Error: ${err.message}`,
         displayText: "",
         timestamp: new Date(),
         fullyTyped: true,
@@ -461,17 +455,6 @@ export default function App() {
                     onClick={() => {
                       setCurrentChat(friend.name);
                       setMessages([]); // Clear messages when switching
-                      // Initialize memory for persona if doesn't exist
-                      if (!chatMemory[friend.name]) {
-                        setChatMemory((prev) => {
-                          const updated = { ...prev, [friend.name]: [] };
-                          localStorage.setItem(
-                            "echosChatMemory",
-                            JSON.stringify(updated)
-                          );
-                          return updated;
-                        });
-                      }
                       // Update last used time
                       const newTime = new Date();
                       setLastUsedTimes((prev) => {

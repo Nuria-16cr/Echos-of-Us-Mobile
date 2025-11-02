@@ -171,14 +171,16 @@ You are Robin, a smart and intelligent teacher who's 20-25 years old. You're alw
 `,
 };
 
-const MAX_MEMORY = 6;
+// Memory management removed - would need client-side storage or database for persistence
 
 exports.handler = async (event, context) => {
-  // Handle CORS
+  // Handle CORS - allow all origins for mobile compatibility
   const headers = {
     "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Headers": "Content-Type",
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Access-Control-Allow-Methods": "POST, OPTIONS, GET",
+    "Access-Control-Max-Age": "86400",
+    "Content-Type": "application/json",
   };
 
   // Handle preflight
@@ -200,11 +202,7 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const {
-      prompt: userMessage,
-      persona = "Alex",
-      memory = [],
-    } = JSON.parse(event.body);
+    const { prompt: userMessage, persona = "Alex" } = JSON.parse(event.body);
 
     if (!userMessage) {
       return {
@@ -216,6 +214,7 @@ exports.handler = async (event, context) => {
 
     // Initialize OpenAI
     if (!process.env.OPENAI_API_KEY) {
+      console.error("OPENAI_API_KEY not found in environment");
       return {
         statusCode: 500,
         headers,
@@ -227,20 +226,8 @@ exports.handler = async (event, context) => {
       apiKey: process.env.OPENAI_API_KEY,
     });
 
-    // Use provided memory or empty array
-    const chatMemory = Array.isArray(memory) ? memory : [];
-
-    // Add user message to memory
-    const updatedMemory = [
-      ...chatMemory,
-      { role: "user", content: userMessage },
-    ];
-
-    // Trim memory
-    const trimmedMemory =
-      updatedMemory.length > MAX_MEMORY
-        ? updatedMemory.slice(-MAX_MEMORY)
-        : updatedMemory;
+    // Note: Memory management would need to be handled client-side or with a database
+    // For simplicity, we'll use a basic approach without memory for now
 
     // Get system prompt for persona
     const systemPrompt = personaPrompts[persona] || personaPrompts.Alex;
@@ -251,7 +238,10 @@ exports.handler = async (event, context) => {
         role: "system",
         content: systemPrompt,
       },
-      ...trimmedMemory,
+      {
+        role: "user",
+        content: userMessage,
+      },
     ];
 
     // Generate response
@@ -265,18 +255,11 @@ exports.handler = async (event, context) => {
     // Post-process tone only for Alex
     const finalReply = persona === "Alex" ? friendify(rawReply) : rawReply;
 
-    // Add assistant reply to memory
-    const finalMemory = [
-      ...trimmedMemory,
-      { role: "assistant", content: finalReply },
-    ].slice(-MAX_MEMORY);
-
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
         reply: finalReply,
-        memory: finalMemory,
       }),
     };
   } catch (err) {
