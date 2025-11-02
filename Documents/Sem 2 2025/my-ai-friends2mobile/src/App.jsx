@@ -12,6 +12,7 @@ export default function App() {
   const [currentChat, setCurrentChat] = useState("Alex");
   const [typingText, setTypingText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
   const [lastUsedTimes, setLastUsedTimes] = useState(() => {
     // Initialize from localStorage or create empty object
     const stored = localStorage.getItem("echosLastUsedTimes");
@@ -155,7 +156,7 @@ export default function App() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Accept": "application/json",
+          Accept: "application/json",
         },
         body: JSON.stringify({
           prompt: input,
@@ -165,21 +166,40 @@ export default function App() {
         cache: "no-cache", // Don't cache requests
       };
 
-      console.log("Fetch options:", JSON.stringify(fetchOptions, null, 2));
-      console.log("Fetch URL:", `${API_URL}/chat`);
+      // Clear any previous error
+      setErrorMessage(null);
 
-      const res = await fetch(`${API_URL}/chat`, fetchOptions).catch((fetchError) => {
-        // Handle network errors (common on mobile)
-        console.error("Network error:", fetchError);
-        console.error("Error type:", fetchError.constructor.name);
-        console.error("Error details:", {
-          name: fetchError.name,
-          message: fetchError.message,
+      // Add timeout for mobile networks (30 seconds)
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+      let res;
+      try {
+        res = await fetch(`${API_URL}/chat`, {
+          ...fetchOptions,
+          signal: controller.signal,
         });
-        throw new Error(
-          `Network error: ${fetchError.message || "Failed to connect"}. Please check your internet connection.`
-        );
-      });
+        clearTimeout(timeoutId);
+      } catch (fetchError) {
+        clearTimeout(timeoutId);
+        // Handle network errors (common on mobile)
+        let errorMsg = "Network error";
+        if (fetchError.name === "AbortError") {
+          errorMsg = "Request timed out. Please check your internet connection and try again.";
+        } else if (fetchError.message.includes("Failed to fetch")) {
+          errorMsg = `Cannot connect to server. URL: ${API_URL}/chat. Please check your internet connection.`;
+        } else {
+          errorMsg = `Network error: ${fetchError.message || "Failed to connect"}. Please check your internet connection.`;
+        }
+        
+        // Show visible error
+        setErrorMessage({
+          type: "network",
+          message: errorMsg,
+          details: `Trying to connect to: ${API_URL}/chat`,
+        });
+        throw new Error(errorMsg);
+      }
 
       console.log("Response status:", res.status);
       console.log("Response ok:", res.ok);
@@ -188,14 +208,37 @@ export default function App() {
       if (!res.ok) {
         const errorText = await res.text();
         console.error("API Error:", res.status, errorText);
-        let errorMessage = `Server responded with ${res.status}`;
+        let errorMsg = `Server responded with ${res.status}`;
         try {
           const errorJson = JSON.parse(errorText);
-          errorMessage = errorJson.error || errorMessage;
+          errorMsg = errorJson.error || errorJson.details || errorMsg;
         } catch {
           // Not JSON, use text as is
+          errorMsg = errorText || errorMsg;
         }
-        throw new Error(errorMessage);
+        
+        // Show visible error for server errors
+        if (res.status === 404) {
+          setErrorMessage({
+            type: "server",
+            message: "Function not found. Please check Netlify function deployment.",
+            details: `Status: ${res.status}. URL: ${API_URL}/chat`,
+          });
+        } else if (res.status === 500) {
+          setErrorMessage({
+            type: "server",
+            message: "Server error. The API key may not be configured.",
+            details: `Status: ${res.status}. ${errorMsg}`,
+          });
+        } else {
+          setErrorMessage({
+            type: "server",
+            message: `Server error: ${errorMsg}`,
+            details: `Status: ${res.status}`,
+          });
+        }
+        
+        throw new Error(errorMsg);
       }
 
       const data = await res.json();
@@ -213,15 +256,25 @@ export default function App() {
     } catch (err) {
       console.error(`Error talking to ${currentChat}:`, err);
       console.error("Error details:", err.message, err.stack);
-      // Show error message to user
-      const errorMessage = {
+      
+      // Show error message to user in chat
+      const chatErrorMessage = {
         sender: currentChat,
-        text: `Sorry, I'm having trouble connecting right now. Error: ${err.message}`,
+        text: `Sorry, I'm having trouble connecting right now. ${err.message.includes("Network") ? "Please check your internet connection." : "Please try again later."}`,
         displayText: "",
         timestamp: new Date(),
         fullyTyped: true,
       };
-      setMessages((m) => [...m, errorMessage]);
+      setMessages((m) => [...m, chatErrorMessage]);
+      
+      // Keep visible error banner if not already set
+      if (!errorMessage) {
+        setErrorMessage({
+          type: "unknown",
+          message: err.message,
+          details: "An unexpected error occurred",
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -406,6 +459,44 @@ export default function App() {
 
       {/* Main Container */}
       <div className="main-container">
+        {/* Error Banner - Visible on Mobile */}
+        {errorMessage && (
+          <div className="error-banner" style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            backgroundColor: "#ff4444",
+            color: "white",
+            padding: "12px 16px",
+            zIndex: 9999,
+            fontSize: "14px",
+            fontWeight: "600",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+          }}>
+            <div style={{ marginBottom: "4px" }}>⚠️ {errorMessage.message}</div>
+            <div style={{ fontSize: "12px", opacity: 0.9 }}>{errorMessage.details}</div>
+            <button
+              onClick={() => setErrorMessage(null)}
+              style={{
+                position: "absolute",
+                top: "8px",
+                right: "8px",
+                background: "rgba(255,255,255,0.3)",
+                border: "none",
+                color: "white",
+                width: "24px",
+                height: "24px",
+                borderRadius: "50%",
+                cursor: "pointer",
+                fontSize: "16px",
+                fontWeight: "bold",
+              }}
+            >
+              ×
+            </button>
+          </div>
+        )}
         <div className="main-content-wrapper">
           {/* Header Section - Above Chat Area */}
           <div className="chat-header-section">
