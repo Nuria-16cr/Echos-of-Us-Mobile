@@ -109,12 +109,8 @@ export default function App() {
     e.preventDefault();
     if (!input.trim()) return;
 
-    // Show immediate feedback that button was clicked
-    setErrorMessage({
-      type: "debug",
-      message: "Sending message...",
-      details: "Please wait...",
-    });
+    // Clear previous errors
+    setErrorMessage(null);
 
     const userMessage = { sender: "You", text: input, timestamp: new Date() };
     setMessages((m) => [...m, userMessage]);
@@ -129,9 +125,10 @@ export default function App() {
       return updated;
     });
 
+    // Determine API URL: Use Netlify function if deployed, otherwise use localhost
+    let API_URL;
     try {
-      // Determine API URL: Use Netlify function if deployed, otherwise use localhost
-      let API_URL;
+      // Determine API URL
       if (import.meta.env.VITE_API_URL) {
         // Custom API URL from environment variable (for external backend)
         API_URL = import.meta.env.VITE_API_URL;
@@ -148,6 +145,12 @@ export default function App() {
         // Always use absolute URL for mobile browsers
         API_URL = `${window.location.origin}/.netlify/functions`;
       }
+    } catch (urlError) {
+      // Fallback API URL if there's an error determining it
+      API_URL = `${window.location.origin}/.netlify/functions`;
+    }
+
+    try {
 
       console.log("Attempting to call:", `${API_URL}/chat`);
       console.log("Hostname:", window.location.hostname);
@@ -271,14 +274,41 @@ export default function App() {
       console.error(`Error talking to ${currentChat}:`, err);
       console.error("Error details:", err.message, err.stack);
 
-      // Show error message to user in chat
+      // Determine API URL for error message
+      let errorAPI_URL;
+      try {
+        if (import.meta.env.VITE_API_URL) {
+          errorAPI_URL = import.meta.env.VITE_API_URL;
+        } else if (
+          window.location.hostname === "localhost" ||
+          window.location.hostname === "127.0.0.1" ||
+          window.location.hostname.startsWith("192.168.") ||
+          window.location.hostname.startsWith("10.")
+        ) {
+          errorAPI_URL = "http://localhost:3001";
+        } else {
+          errorAPI_URL = `${window.location.origin}/.netlify/functions`;
+        }
+      } catch {
+        errorAPI_URL = `${window.location.origin}/.netlify/functions`;
+      }
+
+      // Show detailed error message in chat (guaranteed visibility)
+      let errorText = `❌ ERROR: ${err.message}`;
+      
+      if (err.message.includes("Network") || err.message.includes("Failed to fetch")) {
+        errorText = `❌ Cannot connect to server.\n\nTrying: ${errorAPI_URL}/chat\n\nPlease check:\n1. Internet connection\n2. Netlify function is deployed\n3. OPENAI_API_KEY is set in Netlify`;
+      } else if (err.message.includes("404") || err.message.includes("Function not found")) {
+        errorText = `❌ Function not found (404)\n\nNetlify function may not be deployed.\n\nCheck: Netlify dashboard → Functions`;
+      } else if (err.message.includes("500") || err.message.includes("API key")) {
+        errorText = `❌ Server error (500)\n\nOPENAI_API_KEY may not be configured.\n\nCheck: Netlify → Site settings → Environment variables`;
+      } else if (err.message.includes("timeout")) {
+        errorText = `❌ Request timed out\n\nServer took too long to respond.\n\nThis might be a network issue.`;
+      }
+      
       const chatErrorMessage = {
         sender: currentChat,
-        text: `Sorry, I'm having trouble connecting right now. ${
-          err.message.includes("Network")
-            ? "Please check your internet connection."
-            : "Please try again later."
-        }`,
+        text: errorText,
         displayText: "",
         timestamp: new Date(),
         fullyTyped: true,
@@ -486,7 +516,8 @@ export default function App() {
               top: 0,
               left: 0,
               right: 0,
-              backgroundColor: errorMessage.type === "debug" ? "#ffaa00" : "#ff4444",
+              backgroundColor:
+                errorMessage.type === "debug" ? "#ffaa00" : "#ff4444",
               color: "white",
               padding: "16px 20px",
               zIndex: 99999,
@@ -497,7 +528,8 @@ export default function App() {
             }}
           >
             <div style={{ marginBottom: "6px", fontSize: "18px" }}>
-              {errorMessage.type === "debug" ? "🔄" : "⚠️"} {errorMessage.message}
+              {errorMessage.type === "debug" ? "🔄" : "⚠️"}{" "}
+              {errorMessage.message}
             </div>
             <div style={{ fontSize: "13px", opacity: 0.95, lineHeight: "1.4" }}>
               {errorMessage.details}
